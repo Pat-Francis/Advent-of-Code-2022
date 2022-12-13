@@ -48,6 +48,6 @@ def part_two(filename: str):
 
 
 if __name__ == "__main__":
-    input_file = "./test_input.txt"
+    input_file = "./input.txt"
     print(part_one(input_file))
     print(part_two(input_file))
