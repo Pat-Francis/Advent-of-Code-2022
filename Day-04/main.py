@@ -12,7 +12,7 @@ def process_input(file: str):
         return processed_input
 
 
-def enveloped_range(range1, range2):
+def enveloped_range(range1: list, range2: list):
     if (range1[0] <= range2[0] and range1[1] >= range2[1]) or \
        (range2[0] <= range1[0] and range2[1] >= range1[1]):
         return True
