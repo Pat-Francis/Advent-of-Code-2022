@@ -30,11 +30,17 @@ def part_one(filename: str):
 
 
 def part_two(filename: str):
-    pass
+    stacks, moves = process_input(filename)
+
+    for moves, move_from, move_to in moves:
+        for i in range(0, moves):
+            stacks[move_to - 1].insert(i, stacks[move_from - 1][0])
+            stacks[move_from - 1].pop(0)
+
+    return ''.join(item[0] for item in stacks)
 
 
 if __name__ == "__main__":
     input_file = "./input.txt"
     print(part_one(input_file))
     print(part_two(input_file))
-
