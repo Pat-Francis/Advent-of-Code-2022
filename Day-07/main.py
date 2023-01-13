@@ -1,10 +1,6 @@
 def process_input(file: str):
     with open(file) as f:
-        return f.read().splitlines()
-
-
-def part_one(filename: str):
-    input_data = process_input(filename)
+        input_data = f.read().splitlines()
     current_dir = ""
     dir_structure = {"/": {"child_dir": [], "files": {}}}
 
@@ -21,12 +17,42 @@ def part_one(filename: str):
                     if current_dir not in dir_structure:
                         dir_structure.update({current_dir: {"child_dir": [], "files": {}}})
         elif parts[0] == "dir":
-            dir_structure[current_dir]["child_dir"].append(parts[1])
+            dir_structure[current_dir]["child_dir"].append(f"{current_dir}{parts[1]}")
         else:
             dir_structure[current_dir]["files"].update({parts[1]: int(parts[0])})
 
-    for k, v in dir_structure.items():
-        print(k, v)
+    # for k, v in dir_structure.items():
+    #     print(k, v)
+
+    return dir_structure
+
+
+def dir_size(dir_dict, directory):
+    total_size = 0
+
+    # Add direct files
+    total_size += sum(dir_dict[directory]['files'].values())
+
+    # Add indirect files
+    for sub_dir in dir_dict[directory]['child_dir']:
+        total_size += dir_size(dir_dict, sub_dir)
+
+    return total_size
+
+
+def part_one(filename: str):
+    data_dict = process_input(filename)
+    dir_sizes = {}
+
+    for k, _ in data_dict.items():
+        total_size = dir_size(data_dict, k)
+
+        if total_size < 100000:
+            dir_sizes[k] = total_size
+    # print("---------")
+    # print(dir_sizes)
+
+    return sum(dir_sizes.values())
 
 
 def part_two(filename: str):
