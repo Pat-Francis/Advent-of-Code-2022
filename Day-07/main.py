@@ -17,7 +17,9 @@ def process_input(file: str):
                     current_dir += parts[2]
 
                     if current_dir not in dir_structure:
-                        dir_structure.update({current_dir: {"parent_dir": parent_dir, "child_dir": [], "files": {}}})
+                        dir_structure.update({current_dir: {"parent_dir": parent_dir,
+                                                            "child_dir": [],
+                                                            "files": {}}})
 
         elif parts[0] == "dir":
             dir_structure[current_dir]["child_dir"].append(f"{current_dir}{parts[1]}")
@@ -54,7 +56,19 @@ def part_one(filename: str):
 
 
 def part_two(filename: str):
-    pass
+    total_space = 70000000
+    update_space = 30000000
+    data_dict = process_input(filename)
+    dir_sizes = {}
+
+    for k, _ in data_dict.items():
+        total_size = dir_size(data_dict, k)
+        dir_sizes[k] = total_size
+
+    required_space = update_space - (total_space - dir_sizes.get("/"))
+    candidate_dirs = {key: value for key, value in dir_sizes.items() if value >= required_space}
+
+    return min(candidate_dirs.values())
 
 
 if __name__ == "__main__":
