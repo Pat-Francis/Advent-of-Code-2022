@@ -14,9 +14,9 @@ def part_one(filename: str):
     tree_grid = process_input(filename)
     visible_trees = (len(tree_grid[0]) * 2) + (len(tree_grid) - 2) * 2  # Counts all the 'edge' trees
 
+    # First and last rows/columns omitted, already added to visible_trees
     for i, row in enumerate(tree_grid[1:-1]):
         for j, tree in enumerate(row[1:-1]):
-            # print(tree, i + 1, j + 1)
             adj_check = (
                     max([row[j + 1] for row in tree_grid][:i + 1]) < tree_grid[i + 1][j + 1],  # North
                     max([row[j + 1] for row in tree_grid][i + 2:]) < tree_grid[i + 1][j + 1],  # South
