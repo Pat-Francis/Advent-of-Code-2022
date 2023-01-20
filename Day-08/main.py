@@ -36,10 +36,10 @@ def part_one(filename: str):
     for i, row in enumerate(tree_grid[1:-1]):
         for j, tree in enumerate(row[1:-1]):
             adj_check = (
-                max([row[j + 1] for row in tree_grid][:i + 1]) < tree_grid[i + 1][j + 1],  # North
-                max([row[j + 1] for row in tree_grid][i + 2:]) < tree_grid[i + 1][j + 1],  # South
-                max(row[j + 2:]) < tree_grid[i + 1][j + 1],  # East
-                max(row[:j + 1]) < tree_grid[i + 1][j + 1],  # West
+                max([row[j + 1] for row in tree_grid][:i + 1]) < tree,  # North
+                max([row[j + 1] for row in tree_grid][i + 2:]) < tree,  # South
+                max(row[j + 2:]) < tree,  # East
+                max(row[:j + 1]) < tree,  # West
             )
             if any(adj_check):
                 visible_trees += 1
@@ -57,7 +57,7 @@ def part_two(filename: str):
                      [row[j + 1] for row in tree_grid][i + 2:],  # South
                      row[j + 2:],  # East
                      row[j::-1]]  # West
-            view_scores.append(scenic_score(views, tree_grid[i + 1][j + 1]))
+            view_scores.append(scenic_score(views, tree))
 
     return max(view_scores)
 
