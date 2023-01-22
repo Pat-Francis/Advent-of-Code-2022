@@ -36,7 +36,31 @@ def part_one(filename: str):
 
 
 def part_two(filename: str):
-    pass
+    instructions = process_input(filename)
+    cycle = 0
+    x = 1
+    pixels = []
+
+    for line in instructions:
+        if cycle % 40 in range(x - 1, x + 2):
+            pixels.append('#')
+        else:
+            pixels.append('.')
+        cycle += 1
+
+        if isinstance(line, int):
+            if cycle % 40 in range(x - 1, x + 2):
+                pixels.append('#')
+            else:
+                pixels.append('.')
+            cycle += 1
+            x += line
+
+    # Print the 'pixels' screen
+    pixel_counter = 0
+    for x in range(0, 7):
+        print(''.join(pixels[pixel_counter: pixel_counter + 40]))
+        pixel_counter += 40
 
 
 if __name__ == "__main__":
