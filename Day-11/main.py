@@ -69,7 +69,6 @@ def part_one(filename: str):
         inspection_count.append(monk.inspected)
 
     sorted_inspec = sorted(inspection_count)
-
     return sorted_inspec[-1] * sorted_inspec[-2]
 
 
