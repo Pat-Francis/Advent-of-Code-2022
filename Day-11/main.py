@@ -1,4 +1,6 @@
 import re
+from math import gcd
+from functools import reduce
 
 
 def process_input(file: str):
@@ -23,6 +25,7 @@ class Monkey:
         self.if_false = int(monkey_info[5][-1])
         self.inspected = 0
         self.to_pass = []
+        self.lcm = 0
 
     def inspect_items(self):
         ops = {'+': lambda x, y: x + y,
@@ -31,16 +34,15 @@ class Monkey:
                '/': lambda x, y: x / y
                }
 
-        for item in self.items:
+        for i, item in enumerate(self.items):
             # Operation
             if self.op[1] == 'old':
-                item = ops[self.op[0]](item, item)
+                self.items[i] = ops[self.op[0]](item, item)
             else:
-                item = ops[self.op[0]](item, int(self.op[1]))
+                self.items[i] = ops[self.op[0]](item, int(self.op[1]))
 
-            item //= 3
-
-            # Test
+    def calc_passes(self):
+        for item in self.items:
             if item % self.test == 0:
                 self.to_pass.append([self.if_true, item])
             else:
@@ -53,27 +55,67 @@ class Monkey:
         self.items.append(passed_item)
 
 
+def lcm(arr):
+    return reduce(lambda x, y: (x * y) // gcd(x, y), arr)
+
+
 def part_one(filename: str):
+    inspection_count = []
     monkey_data = process_input(filename)
     monkeys = [Monkey(monkey) for monkey in monkey_data]
-    inspection_count = []
+    rounds = 20
 
-    for _ in range(0, 20):
-        for monk in monkeys:
-            monk.inspect_items()
-            for pass_to, item in monk.to_pass:
+    for _ in range(rounds):
+        for monkey in monkeys:
+            monkey.inspect_items()
+
+            # Update worry level
+            for i, item in enumerate(monkey.items):
+                monkey.items[i] //= 3
+
+            monkey.calc_passes()
+
+            for pass_to, item in monkey.to_pass:
                 monkeys[pass_to].catch_item(item)
-            monk.to_pass.clear()
 
-    for monk in monkeys:
-        inspection_count.append(monk.inspected)
+            monkey.to_pass.clear()
 
-    sorted_inspec = sorted(inspection_count)
-    return sorted_inspec[-1] * sorted_inspec[-2]
+    for monkey in monkeys:
+        inspection_count.append(monkey.inspected)
+
+    inspect_counts = sorted(inspection_count)
+
+    return inspect_counts[-1] * inspect_counts[-2]
 
 
 def part_two(filename: str):
-    pass
+    inspection_count = []
+    monkey_data = process_input(filename)
+    monkeys = [Monkey(monkey) for monkey in monkey_data]
+    monkey_test_lcm = lcm([monkey.test for monkey in monkeys])
+    rounds = 10_000
+
+    for _ in range(rounds):
+        for monkey in monkeys:
+            monkey.inspect_items()
+
+            # Update worry level
+            for i, item in enumerate(monkey.items):
+                monkey.items[i] = monkey.items[i] % monkey_test_lcm
+
+            monkey.calc_passes()
+
+            for pass_to, item in monkey.to_pass:
+                monkeys[pass_to].catch_item(item)
+
+            monkey.to_pass.clear()
+
+    for monkey in monkeys:
+        inspection_count.append(monkey.inspected)
+
+    inspect_counts = sorted(inspection_count)
+
+    return inspect_counts[-1] * inspect_counts[-2]
 
 
 if __name__ == "__main__":
